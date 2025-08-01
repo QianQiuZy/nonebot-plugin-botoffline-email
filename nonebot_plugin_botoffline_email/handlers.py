@@ -67,7 +67,7 @@ async def _check_bot_silent_offline():
     bot = next(iter(bots.values()))
 
     try:
-        await bot.call_api("get_group_info", group_id=202781936)
+        await bot.call_api("get_group_list")
     except Exception as e:
         _failure_count += 1
         logger.warning(f"第 {_failure_count} 次静默检测失败: {e!r}")
