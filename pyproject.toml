@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-botoffline-email"
-version = "0.0.2"
+version = "0.0.3"
 description = "QQ Bot 掉线后使用 SMTP 发送邮件提醒"
 authors = ["千秋紫莹 <qianqiuzy@gmail.com>"]
 readme = "README.md"
