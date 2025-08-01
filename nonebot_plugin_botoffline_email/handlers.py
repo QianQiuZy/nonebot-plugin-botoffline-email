@@ -84,6 +84,6 @@ async def _check_bot_silent_offline():
             _email_sent = True
             logger.error("已发送静默掉线邮件提醒")
     else:
-        logger.info("静默检测正常：get_group_info 调用成功")
+        logger.info("静默检测正常：get_group_list 调用成功")
         _failure_count = 0
         _email_sent = False
