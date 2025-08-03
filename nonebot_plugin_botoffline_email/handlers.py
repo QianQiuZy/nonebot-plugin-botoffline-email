@@ -24,6 +24,7 @@ bot_offline = on_notice(
 
 @bot_offline.handle()
 async def _(bot: Bot, event: NoticeEvent, state: T_State):
+    global _email_sent
     dt = datetime.datetime.fromtimestamp(event.time)
     time_str = dt.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -32,11 +33,12 @@ async def _(bot: Bot, event: NoticeEvent, state: T_State):
         f"检测到 Bot 下线通知：\n"
         f"时间：{time_str}\n"
         f"QQ 号：{event.user_id}\n"
-        f"请及时重新登录。"
+        f"请及时重新登录"
     )
 
     try:
         _send_email("【警告】Bot 已下线", body)
+        _email_sent = True
     except Exception as e:
         logger.error(f"发送下线提醒邮件失败：{e}")
 
@@ -67,7 +69,11 @@ async def _check_bot_silent_offline():
     bot = next(iter(bots.values()))
 
     try:
-        await bot.call_api("get_group_list")
+        await bot.call_api(
+            "send_private_msg",
+            user_id=bot.self_id,
+            message="Bot静默掉线检测"
+        )
     except Exception as e:
         _failure_count += 1
         logger.warning(f"第 {_failure_count} 次静默检测失败: {e!r}")
@@ -77,13 +83,14 @@ async def _check_bot_silent_offline():
             body = (
                 f"检测到 Bot 静默掉线：\n"
                 f"时间：{now}\n"
+                f"QQ 号：{bot.self_id}\n"
                 f"连续三次调用API返回失败\n"
-                f"请及时检查 Bot 状态。"
+                f"请及时检查Bot状态"
             )
             _send_email(subject, body)
             _email_sent = True
             logger.error("已发送静默掉线邮件提醒")
     else:
-        logger.info("静默检测正常：get_group_list 调用成功")
+        logger.info("静默检测正常")
         _failure_count = 0
         _email_sent = False
